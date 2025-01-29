@@ -3,6 +3,7 @@ package cmd
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"strings"
 
@@ -60,7 +61,9 @@ func bootstrapCmdPlugin(cmd *cobra.Command, pluginHandler plugin.PluginHandler) 
 			case "help", "completion", cobra.ShellCompRequestCmd, cobra.ShellCompNoDescRequestCmd:
 			default:
 				if !builtinSubCmdExist {
+					fmt.Println("have not got the subCmd for " + cmdName + ",try to running with plugin command...")
 					if err := plugin.HandlePluginCommand(pluginHandler, cmdPathPieces, false); err != nil {
+						log.Println("have not got the plugin command!")
 						fmt.Fprintf(os.Stderr, "Error: %v\n", err)
 						os.Exit(1)
 					}
