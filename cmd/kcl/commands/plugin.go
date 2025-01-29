@@ -61,12 +61,14 @@ func bootstrapCmdPlugin(cmd *cobra.Command, pluginHandler plugin.PluginHandler) 
 			case "help", "completion", cobra.ShellCompRequestCmd, cobra.ShellCompNoDescRequestCmd:
 			default:
 				if !builtinSubCmdExist {
-					fmt.Println("have not got the subCmd for " + cmdName + ",try to running with plugin command...")
+					fmt.Fprintf(os.Stderr, "Have not find the subCmd for %s,try to running command with plugin ...\n", cmdName)
+					log.Println(cmdPathPieces)
 					if err := plugin.HandlePluginCommand(pluginHandler, cmdPathPieces, false); err != nil {
-						log.Println("have not got the plugin command!")
-						fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+						//TODO 运行 go run cmd/kcl/main.go aaa  没有进入到这里,而是把 aaa 参数认为是 main.k 这样的文件处理了,直接报错 source is nil,但是没找到是哪里
+						fmt.Fprintf(os.Stderr, "Have not find the plugin!Error: %v\n,please try to run 'kcl help' to check it. \n", err)
 						os.Exit(1)
 					}
+					// 执行了这里
 					executeRunCmd(cmdPathPieces)
 				}
 			}
